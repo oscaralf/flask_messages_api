@@ -6,10 +6,11 @@ from config import app_config
 
 def create_app(config_name):
     app = Flask(__name__)
+    app.config.from_object(app_config[config_name])
+    if not app.config.get("SQLALCHEMY_DATABASE_URI"):
+        raise Exception("Environment variable SQLALCHEMY_DATABASE_URI must be defined")
     api = Api(app)
     setattr(app, 'api', api)
-
-    app.config.from_object(app_config[config_name])
 
     with app.app_context():
         register_app(app)
