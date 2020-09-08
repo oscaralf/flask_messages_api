@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  device-registry:
+    build: .
+    volumes:
+      - .:/usr/src/app
+    environment:
+      SQLALCHEMY_DATABASE_URI: sqlite:////usr/src/app/messages.db
+      PORT: 8080
+    ports:
+      - 5000:8080
