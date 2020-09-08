@@ -8,10 +8,8 @@ db = SQLAlchemy()
 ma = Marshmallow()
 
 
-# def register_app(app):
 db.init_app(app)
 ma.init_app(app)
-db.create_all()
 
 
 def add_message(sender_user_id, target_user_id, text):
@@ -101,3 +99,4 @@ class UserMessageSchema(ma.Schema):
 
 user_message_schema = UserMessageSchema()
 user_messages_schema = UserMessageSchema(many=True)
+db.create_all()

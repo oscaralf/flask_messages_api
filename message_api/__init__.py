@@ -16,8 +16,8 @@ def create_app(config_name):
 
     with app.app_context():
         api.init_app(app)
+        from . import sqlalquemy_store
         from . import routes
         from . import healthcheck_routes
-        from . import sqlalquemy_store
 
         return app
