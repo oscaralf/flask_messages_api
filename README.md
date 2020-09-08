@@ -164,5 +164,5 @@ To be used by load balancing, service registry, etc.
 - Consider GUID as identifiers to control the creation of IDs and guarantee that they don't clash between multiple instances running the REST API
 - Add database status connection to the healthcheck
 - Consider setting the last read message from the client with a new uri endpoint. Since the client can determine if they were actually shown to the user
-- Maybe use to different uri end points for getting all messages, and one for only the new ones
+- Maybe use two different uri end points for getting all messages, and one for only the new ones
 
