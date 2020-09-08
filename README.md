@@ -163,4 +163,6 @@ To be used by load balancing, service registry, etc.
 - Source user_id should come from the header and not from the request JSON data, and it should match the authenticated user id, this should be changed when adding authentication
 - Consider GUID as identifiers to control the creation of IDs and guarantee that they don't clash between multiple instances running the REST API
 - Add database status connection to the healthcheck
+- Consider setting the last read message from the client. Since the client can determined if they were actually shown to the user
+- Maybe use to different end points for getting all messages, and one for only the new ones
 
