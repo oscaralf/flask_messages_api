@@ -165,4 +165,5 @@ To be used by load balancing, service registry, etc.
 - Add database status connection to the healthcheck
 - Consider setting the last read message from the client with a new uri endpoint. Since the client can determine if they were actually shown to the user
 - Maybe use two different uri end points for getting all messages, and one for only the new ones
+- I left the message structure as bare minimum as possible to show the functionality, but depending on how this is meant to be used, the message and user object fields would change accordingly
 
