@@ -2,8 +2,29 @@
 
 ## Installation
 
+**With Docker**
 
-## Usage
+```shell
+$ git clone https://github.com/oscaralf/flask_messages_api.git
+$ cd flask_messages_api
+$ docker-compose build
+$ docker-compose up
+```
+
+**With python**
+
+```shell
+$ git clone https://github.com/oscaralf/flask_messages_api.git
+$ cd flask_messages_api
+$ python3 -m venv myenv
+$ source myenv/bin/activate
+$ pip3 install -r requirements.txt
+$ python run.py
+```
+
+To override http port or DB URL, copy rename '.env.example' to '.env' and modify each environment variable 
+
+## API Usage
 
 
 ### List messages for user <user_name>
