@@ -146,7 +146,17 @@ Ex:
 }
 ```
 
-### Dev notes
+## Monitoring
+
+`GET /healthcheck`
+
+`GET /environment`
+
+To be used by load balancers, service registry, etc.
+
+
+### Future Dev notes
 - Source user_id should come from the header and not from the request JSON data, and it should match the authenticated user id, this should be changed when adding authentication
 - Consider GUID as identifiers to control the creation of IDs and guarantee that they don't clash between multiple instances running the REST API
+- Add database status connection to the healthcheck
 
