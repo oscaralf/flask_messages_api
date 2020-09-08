@@ -1,6 +1,5 @@
 from flask import Flask
 
-from message_api.sqlalquemy_store import register_app
 from config import app_config
 
 
@@ -16,9 +15,9 @@ def create_app(config_name):
     setattr(app, 'api', api)
 
     with app.app_context():
-        register_app(app)
         api.init_app(app)
         from . import routes
         from . import healthcheck_routes
+        from . import sqlalquemy_store
 
         return app

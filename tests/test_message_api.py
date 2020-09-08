@@ -3,7 +3,6 @@ from datetime import datetime
 from unittest import TestCase
 from message_api import create_app
 
-from message_api.sqlalquemy_store import clean_database, init_database
 
 app = create_app(config_name="testing")
 
@@ -18,8 +17,10 @@ class MessagesApi(TestCase):
         self._target = "norbert"
         with app.app_context():
             # create all tables
-            clean_database()
-            init_database()
+            from message_api.sqlalquemy_store import db
+            db.session.remove()
+            db.drop_all()
+            db.create_all()
 
     def test_no_messages_with_clean_start(self):
         res = self.get_messages()

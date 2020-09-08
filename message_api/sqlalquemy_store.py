@@ -2,24 +2,16 @@ from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from flask import current_app as app
 
 db = SQLAlchemy()
 ma = Marshmallow()
 
 
-def register_app(app):
-    db.init_app(app)
-    ma.init_app(app)
-    init_database()  # Create sql tables for our data models
-
-
-def init_database():
-    db.create_all()
-
-
-def clean_database():
-    db.session.remove()
-    db.drop_all()
+# def register_app(app):
+db.init_app(app)
+ma.init_app(app)
+db.create_all()
 
 
 def add_message(sender_user_id, target_user_id, text):
