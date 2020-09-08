@@ -28,6 +28,7 @@ class Config:
 class DevelopmentConfig(Config):
     """Configurations for Development."""
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = environ.get("SQLALCHEMY_DATABASE_URI", 'sqlite:///messages.db')
 
 
 class TestingConfig(Config):
