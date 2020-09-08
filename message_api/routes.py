@@ -21,7 +21,32 @@ class MessageList(Resource):
     @staticmethod
     def get(user_id):
         get_old_messages = request.args.get("get_old_messages")
-        messages = get_messages(user_id, bool(get_old_messages))
+        if get_old_messages not in (None, "true", "false"):
+            abort(400, "'get_old_messages' must be [true|false]")
+
+        get_old_messages = get_old_messages == 'true'
+
+        page = request.args.get("page")
+        page_size = request.args.get("page_size")
+
+        if page is not None or page_size is not None:
+            if not get_old_messages:
+                abort(400, "Pagination parameters [page|page_size] can only be used when 'get_old_messages=true'")
+
+            page = page or 0
+            page_size = page_size or 10
+
+            try:
+                page = int(page)
+                page_size = int(page_size)
+            except ValueError:
+                abort(400, "'page' and 'page_size' must be integers")
+
+        messages = get_messages(
+            user_id,
+            get_old_messages=get_old_messages,
+            page=page,
+            page_size=page_size)
         return messages, 200
 
     @staticmethod

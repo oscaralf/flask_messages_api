@@ -109,7 +109,7 @@ class MessagesApi(TestCase):
         self.assertEqual("test message 4", res[1].get("text"))
         self.assertEqual("test message 5", res[2].get("text"))
 
-    def test_get_all_returns_every_message_on_multiple_get_calls(self):
+    def test_get_old_messages_returns_every_message_on_multiple_get_calls(self):
         self.post_message('test message 1')
         self.post_message('test message 2')
 
@@ -123,6 +123,77 @@ class MessagesApi(TestCase):
         self.assertEqual("test message 1", res[0].get("text"))
         self.assertEqual("test message 2", res[1].get("text"))
         self.assertEqual("test message 3", res[2].get("text"))
+
+    def test_get_old_messages_returns_with_pagination(self):
+        self.post_message('test message 1')
+        self.post_message('test message 2')
+        self.post_message('test message 3')
+        self.post_message('test message 4')
+        self.post_message('test message 5')
+        self.post_message('test message 6')
+        self.post_message('test message 7')
+        self.post_message('test message 8')
+        self.post_message('test message 9')
+        self.post_message('test message 10')
+        self.post_message('test message 11')
+        self.post_message('test message 12')
+
+        res = self.get_messages(get_old_messages=True, page=0, page_size=5)
+        self.assertEqual(5, len(res))
+        self.assertEqual("test message 1", res[0].get("text"))
+        self.assertEqual("test message 2", res[1].get("text"))
+        self.assertEqual("test message 3", res[2].get("text"))
+        self.assertEqual("test message 4", res[3].get("text"))
+        self.assertEqual("test message 5", res[4].get("text"))
+
+        res = self.get_messages(get_old_messages=True, page=1, page_size=5)
+        self.assertEqual(5, len(res))
+        self.assertEqual("test message 6", res[0].get("text"))
+        self.assertEqual("test message 7", res[1].get("text"))
+        self.assertEqual("test message 8", res[2].get("text"))
+        self.assertEqual("test message 9", res[3].get("text"))
+        self.assertEqual("test message 10", res[4].get("text"))
+
+        res = self.get_messages(get_old_messages=True, page=2, page_size=5)
+        self.assertEqual(2, len(res))
+        self.assertEqual("test message 11", res[0].get("text"))
+        self.assertEqual("test message 12", res[1].get("text"))
+
+        res = self.get_messages(get_old_messages=True, page=3, page_size=5)
+        self.assertEqual(0, len(res))
+
+        # different page_size
+        res = self.get_messages(get_old_messages=True, page=2, page_size=2)
+        self.assertEqual(2, len(res))
+        self.assertEqual("test message 5", res[0].get("text"))
+        self.assertEqual("test message 6", res[1].get("text"))
+
+    def test_fail_get_with_not_valid_get_old_messages(self):
+        return self.get(self.messages_uri(
+            self._target,
+            get_old_messages="xxx"),
+            400)
+
+    def test_fail_get_with_not_valid_page(self):
+        return self.get(self.messages_uri(
+            self._target,
+            get_old_messages="true",
+            page="qwerty"),
+            400)
+
+    def test_fail_get_with_not_valid_page_size(self):
+        return self.get(self.messages_uri(
+            self._target,
+            get_old_messages="true",
+            page_size="qwerty"),
+            400)
+
+    def test_fail_get_pagination_params_but_not_get_old_message_set_to_true(self):
+        return self.get(self.messages_uri(
+            self._target,
+            get_old_messages="false",
+            page_size="qwerty"),
+            400)
 
     def test_delete_non_existing_message_returns_ok(self):
         deleted_count = self.delete_messages(918273645)
@@ -199,10 +270,10 @@ class MessagesApi(TestCase):
             self.make_message(text),
             201)
 
-    def get_messages(self, user_name=None, get_old_messages=None):
+    def get_messages(self, user_name=None, get_old_messages=None, page=None, page_size=None):
         return self.get(self.messages_uri(
             user_name=user_name or self._target,
-            get_old_messages=get_old_messages),
+            get_old_messages=get_old_messages, page=page, page_size=page_size),
             200)
 
     def delete_messages(self, *message_ids, target=None):
@@ -214,14 +285,17 @@ class MessagesApi(TestCase):
         return res.get("deleted_count")
 
     @staticmethod
-    def messages_uri(user_name, message_id=None, get_old_messages=False):
+    def messages_uri(user_name, message_id=None, **kwargs):
         uri = f'/users/{ user_name }/messages'
         if message_id:
             uri += f'/{message_id}'
 
-        query_string = []
-        if get_old_messages:
-            query_string.append(f'get_old_messages={str(get_old_messages).lower()}')
+        # get_old_messages = False, page = None, offset = None
+
+        query_string = [f'{arg}={str(value).lower()}' for arg, value in kwargs.items() if value is not None]
+
+        # if 'get_old_messages' in kwargs:
+        #     query_string.append(f'get_old_messages={str(get_old_messages).lower()}')
 
         if query_string:
             uri += '?' + '&'.join(query_string)

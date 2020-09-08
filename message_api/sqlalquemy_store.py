@@ -21,14 +21,22 @@ def add_message(sender_user_id, target_user_id, text):
     return user_message_schema.dump(new_message)
 
 
-def get_messages(user_id, get_old_messages=False):
+def get_messages(user_id, get_old_messages=False, page=None, page_size=None):
 
-    messages_filter = UserMessageModel.query.filter_by(target=user_id)
+    messages_filter = (UserMessageModel.query
+                       .filter_by(target=user_id)
+                       .order_by(UserMessageModel.sent_time))
 
-    if not get_old_messages:
+    if not get_old_messages and page is None and page_size is None:
         user_data = UserModel.query.filter_by(user_id=user_id).first()
         if user_data and user_data.last_message_read_timestamp:
             messages_filter = messages_filter.filter(UserMessageModel.sent_time > user_data.last_message_read_timestamp)
+
+    if page is not None or page_size is not None:
+        if page_size is None:
+            page_size = 10
+        messages_filter = messages_filter.limit(page_size)
+        messages_filter = messages_filter.offset(page_size * page)
 
     messages = messages_filter.all()
 

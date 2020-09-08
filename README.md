@@ -39,6 +39,10 @@ In order to see all messages use
 
 `GET /user/<user_name>/messages?get_old_messages=true`
 
+To paginate results use
+
+`GET /user/<user_name>/messages?get_old_messages=true&page=[int]&page_size=[int]`
+
 **Response**
 
 - `200 OK` on success
@@ -66,7 +70,7 @@ In order to see all messages use
 
 **Definition**
 
-`POST /user/<user_name>/messages?get_old_messages=true`
+`POST /user/<user_name>/messages`
 
 **Request**
 
@@ -152,7 +156,7 @@ Ex:
 
 `GET /environment`
 
-To be used by load balancers, service registry, etc.
+To be used by load balancing, service registry, etc.
 
 
 ### Future Dev notes
